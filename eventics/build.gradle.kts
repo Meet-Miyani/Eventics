@@ -3,6 +3,9 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
 }
 
+group = "io.github.meet-miyani"
+version = "1.0.0"
+
 android {
     namespace = "avinya.tech.eventics"
     compileSdk = 34
