@@ -6,6 +6,30 @@ package avinya.tech.eventics
  * Classes implementing this interface should define the event name and the properties
  * associated with that event. This allows for a consistent structure across different
  * types of events, making it easier to manage and log events in a uniform way.
+ *
+ * Example:
+ * ```
+ * class UserSignedInEvent : BaseEventic {
+ *     override val eventName = "USER_SIGNED_IN"
+ *     override val properties = mapOf(
+ *         "user_id" to "12345",
+ *         "login_method" to "email"
+ *     )
+ * }
+ * ```
+ * or
+ * ```
+ * data class UserSignedInEvent(
+ *     private val userId: Int,
+ *     private val loginMethod: String,
+ * ) : BaseEventic {
+ *     override val eventName = "USER_SIGNED_IN"
+ *     override val properties = mapOf(
+ *         "user_id" to userId,
+ *         "login_method" to loginMethod
+ *     )
+ * }
+ * ```
  */
 interface BaseEventic {
     /**

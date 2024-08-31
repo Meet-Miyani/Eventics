@@ -46,15 +46,73 @@ abstract class EventicsManager(
     protected abstract fun loggingError(e: EventicsException)
 
     /**
+     * Logs an event with the specified name and no additional properties.
+     *
+     * This method is a convenience function that logs an event with the provided `eventName`
+     * and an empty map of properties. It delegates to the `log(eventName: String, properties: Map<String, Any?>)` method.
+     *
+     * Example usage:
+     * ```
+     * log("USER_SIGNED_UP")
+     * ```
+     *
+     * @param eventName The name of the event to log.
+     */
+    fun log(eventName: String) {
+        logEvent(eventName)
+    }
+
+    /**
      * Logs an event using a `BaseEventic` instance.
      *
      * This method extracts the event name and properties from the `BaseEventic` instance
      * and delegates the logging to the appropriate method.
      *
+     * Example:
+     * ```
+     * data class UserSignedInEvent(
+     *     private val userId: Int,
+     *     private val loginMethod: String,
+     * ) : BaseEventic {
+     *     override val eventName = "USER_SIGNED_IN"
+     *     override val properties = mapOf(
+     *         "user_id" to userId,
+     *         "login_method" to loginMethod
+     *     )
+     * }
+     *
+     * val event = UserSignedInEvent(
+     *     userId = 12345,
+     *     loginMethod = "email"
+     * )
+     * log(event)
+     * ```
+     *
      * @param event The `BaseEventic` instance containing the event name and properties.
      */
     fun log(event: BaseEventic) {
-        log(event.eventName, event.properties)
+        logEvent(event.eventName, event.properties)
+    }
+
+    /**
+     * Inline function to log an event using a lambda to build the event.
+     * This is useful for cases where the event is constructed dynamically.
+     *
+     * Example:
+     * ```
+     * log {
+     *     UserSignedInEvent(
+     *         userId = 12345,
+     *         loginMethod = "email"
+     *     )
+     * }
+     * ```
+     *
+     * @param buildEvent Lambda function that constructs the event, returning an instance of a class that implements `BaseEventic`.
+     */
+    inline fun <E : BaseEventic> log(buildEvent: () -> E) {
+        val event = buildEvent()
+        log(event)
     }
 
     /**
@@ -63,11 +121,34 @@ abstract class EventicsManager(
      * This method allows for a more dynamic way to build the properties map before logging the event.
      * The lambda is applied to a mutable map, which is then passed to the logging method.
      *
+     * Example usage:
+     * ```
+     * log("USER_SIGNED_UP") {
+     *     put("source", "email")
+     *     put("successful", true)
+     * }
+     * ```
+     *
      * @param eventName The name of the event to log.
      * @param properties A lambda function that populates the properties map.
      */
     fun log(eventName: String, properties: MutableMap<String, Any?>.() -> Unit) {
-        log(eventName, mutableMapOf<String, Any?>().apply(properties))
+        logEvent(eventName, mutableMapOf<String, Any?>().apply(properties))
+    }
+
+    /**
+     * Logs an event with a name and a predefined properties map.
+     *
+     * Example usage:
+     * ```
+     * log("USER_SIGNED_UP", mapOf("source" to "email", "successful" to true))
+     * ```
+     *
+     * @param eventName The name of the event to log.
+     * @param properties A map containing the properties to log with the event.
+     */
+    fun log(eventName: String, properties: Map<String, Any?>) {
+        logEvent(eventName = eventName, properties = properties)
     }
 
     /**
@@ -80,7 +161,7 @@ abstract class EventicsManager(
      * @param eventName The name of the event to log.
      * @param properties A map containing the properties to log with the event.
      */
-    fun log(eventName: String, properties: Map<String, Any?>) {
+    private fun logEvent(eventName: String, properties: Map<String, Any?> = emptyMap()) {
         if (!validateEvent(eventName)) {
             val exception = EventicsException(eventName, "Invalid event: $eventName", null)
             loggingError(exception)
@@ -90,6 +171,7 @@ abstract class EventicsManager(
         if (context == null) {
             return
         }
+
         val bundle = createBundle(eventName, properties) ?: return
         tryLogging(eventName) {
             log(context, eventName, bundle)
