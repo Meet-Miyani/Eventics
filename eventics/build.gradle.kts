@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "io.github.meet-miyani"
-version = "1.0.0"
+version = "1.0.1"
 
 android {
     namespace = "avinya.tech.eventics"
@@ -46,7 +46,7 @@ mavenPublishing {
     coordinates(
         groupId = "io.github.meet-miyani",
         artifactId = "eventics-library",
-        version = "1.0.0",
+        version = "1.0.1",
     )
 
     pom {
