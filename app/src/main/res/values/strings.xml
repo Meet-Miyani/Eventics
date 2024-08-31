@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Eventics</string>
+    <string name="product_recyclerview">Product RecyclerView</string>
 </resources>
