@@ -7,6 +7,7 @@ Eventics is a lightweight and scalable library designed to simplify and enhance 
 ## Why Eventics?
 
 ### Traditional Approach Challenges
+
 In the traditional approach, developers often log events like this:
 
 ```kotlin
@@ -20,6 +21,7 @@ FirebaseAnalytics.getInstance(this).logEvent("CLICK_ON_ITEM", Bundle().apply {
 This requires creating bundles manually at every place where an event needs to be logged, leading to repetitive code, potential errors, and reduced readability. Managing such events across different parts of the app becomes increasingly difficult and unscalable.
 
 ### The Eventics Solution
+
 Eventics streamlines the event logging process by allowing you to:
 
 - **Create Custom Event Classes:** Define events in a structured way by extending the `BaseEventic` interface.
@@ -65,7 +67,7 @@ class MyEventManager(
         // Facebook Analytics
         // Uncomment and use the following to log events to Facebook:
 
-        // val logger = AppEventsLogger.newLogger(context) 
+        // val logger = AppEventsLogger.newLogger(context)
         // logger.logEvent(eventName, bundle)
     }
 
@@ -81,38 +83,37 @@ class MyEventManager(
 }
 ```
 
+Define super properties if required; otherwise, you can pass `null`.
 
-   Define super properties if required; otherwise, you can pass `null`.
+```kotlin
+class MySuperPropertiesProvider : SuperPropertiesProvider {
+    override fun getSuperProperties(context: Context): Map<String, Any?> {
+        return mapOf(
+            "app_version" to BuildConfig.VERSION_NAME,
+            "device_model" to Build.MODEL,
+            "platform" to "Android"
+        )
+    }
+}
+```
 
-   ```kotlin
-   class MySuperPropertiesProvider : SuperPropertiesProvider {
-       override fun getSuperProperties(context: Context): Map<String, Any?> {
-           return mapOf(
-               "app_version" to BuildConfig.VERSION_NAME,
-               "device_model" to Build.MODEL,
-               "platform" to "Android"
-           )
-       }
-   }
-   ```
+**Example:**
 
-   **Example:**
+```kotlin
+class MyEventManager(
+    context: Context?,
+    superPropertiesProvider: SuperPropertiesProvider = MySuperPropertiesProvider()
+) : EventicsManager(context, superPropertiesProvider)
+```
 
-   ```kotlin
-   class MyEventManager(
-       context: Context?,
-       superPropertiesProvider: SuperPropertiesProvider = MySuperPropertiesProvider()
-   ) : EventicsManager(context, superPropertiesProvider)
-   ```
+or
 
-   or
-
-   ```kotlin
-   class MyEventManager(
-       context: Context?,
-       superPropertiesProvider: SuperPropertiesProvider? = null
-   ) : EventicsManager(context, superPropertiesProvider)
-   ```
+```kotlin
+class MyEventManager(
+    context: Context?,
+    superPropertiesProvider: SuperPropertiesProvider? = null
+) : EventicsManager(context, superPropertiesProvider)
+```
 
 ## Usage
 
@@ -127,13 +128,17 @@ MyEventManager.get(this).log("EVENT_NAME")
 - **Dynamic Event Logging:**
 
 You can log events dynamically in two ways:
-  1. **Using Lambdas:** With lambdas, you can build the properties map directly within the log function, allowing for concise and readable code.
+
+1. **Using Lambdas:** With lambdas, you can build the properties map directly within the log function, allowing for concise and readable code.
+
 ```kotlin
 MyEventManager(this).log(eventName = "EVENT_NAME") {
     put("This" to 12.3)
 }
 ```
-  2. **Using Parameters:** Alternatively, you can pass a predefined map of properties directly to the log function.
+
+2. **Using Parameters:** Alternatively, you can pass a predefined map of properties directly to the log function.
+
 ```kotlin
 MyEventManager(this).log(
     eventName = "EVENT_NAME",
@@ -152,6 +157,8 @@ data class EventHome(private val message: String) : BaseEventic {
 val homeEvent = EventHome(message = "HomeScreen:1.0")
 MyEventManager.get(this).log(homeEvent)
 ```
+
+> Refer to the app module in the repository for a more detailed understanding.
 
 ## How It Works
 
