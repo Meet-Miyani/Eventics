@@ -24,7 +24,7 @@
         <activity
             android:name=".views.ViewActivity"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+            android:theme="@style/Theme.Material3.Light.NoActionBar" />
         <activity
             android:name=".compose.ComposeActivity"
             android:exported="false"

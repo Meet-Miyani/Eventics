@@ -20,6 +20,8 @@ import androidx.compose.ui.unit.dp
 import avinya.tech.eventics.EventicsLogger
 import avinya.tech.eventics.sample.compose.ComposeActivity
 import avinya.tech.eventics.sample.compose.ui.theme.EventicsTheme
+import avinya.tech.eventics.sample.events.EventHome
+import avinya.tech.eventics.sample.events.core.MyEventManager
 import avinya.tech.eventics.sample.views.ViewActivity
 
 class MainActivity : ComponentActivity() {
@@ -56,5 +58,8 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
+        val homeEvent = EventHome(message = "HomeScreen:1.0")
+        MyEventManager.get(this).log(homeEvent)
     }
 }
