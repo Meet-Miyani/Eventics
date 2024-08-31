@@ -63,7 +63,8 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
-    implementation(project(":eventics"))
+    implementation("io.github.meet-miyani:eventics-library:1.0.0")
+//    implementation(project(":eventics"))
 
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
